@@ -4,10 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "@/types/fodmap";
 
 const SUGGESTIONS = [
-  "Est-ce que je peux manger de l'avocat ?",
-  "Quels sont les substituts à l'ail ?",
-  "Donne-moi une idée de petit-déjeuner rapide",
-  "Quels laits végétaux sont low-FODMAP ?",
+  "Puis-je manger de l'avocat ?",
+  "Substituts à l'ail ?",
+  "Idée de petit-déjeuner rapide",
+  "Quels laits végétaux ?",
 ];
 
 export default function ChatPage() {
@@ -26,16 +26,11 @@ export default function ChatPage() {
 
     const userMessage: ChatMessage = { role: "user", content };
     const updatedMessages = [...messages, userMessage];
-
     setMessages(updatedMessages);
     setInput("");
     setLoading(true);
 
-    // Ajouter un message assistant vide pour le streaming
-    setMessages((prev) => [
-      ...prev,
-      { role: "assistant", content: "" },
-    ]);
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
     try {
       const res = await fetch("/api/chat", {
@@ -52,16 +47,13 @@ export default function ChatPage() {
         return;
       }
 
-      // Lire le stream et mettre à jour le dernier message progressivement
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         const chunk = decoder.decode(value, { stream: true });
-
         setMessages((prev) => {
           const updated = [...prev];
           updated[updated.length - 1] = {
@@ -81,38 +73,50 @@ export default function ChatPage() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      send();
-    }
-  };
-
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
+    <div style={{ display: "flex", flexDirection: "column", height: "100dvh" }}>
 
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4 text-center">
-        <h1 className="text-xl font-bold text-gray-900">Diététicien FODMAP</h1>
-        <p className="text-sm text-gray-500">
-          Posez vos questions sur le régime low-FODMAP
-        </p>
+      <div style={{ background: "#185FA5", padding: "52px 24px 20px", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{
+            width: "38px", height: "38px", borderRadius: "50%",
+            background: "#0C447C",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <div style={{ width: "16px", height: "16px", borderRadius: "50%", background: "#85B7EB" }} />
+          </div>
+          <div>
+            <p style={{ fontSize: "15px", fontWeight: 500, color: "#fff", margin: 0 }}>Diététicien AI</p>
+            <p style={{ fontSize: "11px", color: "#85B7EB", margin: 0 }}>Expert FODMAP · en ligne</p>
+          </div>
+        </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 max-w-2xl mx-auto w-full">
+      <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px", display: "flex", flexDirection: "column", gap: "12px" }}>
 
         {messages.length === 0 && (
-          <div className="space-y-4">
-            <p className="text-center text-sm text-gray-400">
-              Bonjour ! Comment puis-je vous aider aujourd'hui ?
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <p style={{ fontSize: "13px", color: "#85B7EB", textAlign: "center", margin: "8px 0 16px" }}>
+              Bonjour ! Comment puis-je vous aider ?
             </p>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="text-left text-sm px-4 py-3 rounded-xl border border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50 transition-colors text-gray-700"
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #DAEAF8",
+                    borderRadius: "14px",
+                    padding: "12px",
+                    fontSize: "12px",
+                    color: "#0C447C",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    lineHeight: 1.4,
+                  }}
                 >
                   {s}
                 </button>
@@ -122,21 +126,20 @@ export default function ChatPage() {
         )}
 
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
-                msg.role === "user"
-                  ? "bg-blue-600 text-white rounded-br-sm"
-                  : "bg-white border border-gray-200 text-gray-800 rounded-bl-sm"
-              }`}
-            >
+          <div key={i} style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
+            <div style={{
+              maxWidth: "80%",
+              borderRadius: msg.role === "user" ? "18px 4px 18px 18px" : "4px 18px 18px 18px",
+              padding: "12px 14px",
+              background: msg.role === "user" ? "#185FA5" : "#fff",
+              border: msg.role === "user" ? "none" : "1px solid #DAEAF8",
+              fontSize: "13px",
+              color: msg.role === "user" ? "#fff" : "#0C447C",
+              lineHeight: 1.6,
+              whiteSpace: "pre-wrap",
+            }}>
               {msg.content || (
-                <span className="text-gray-400 animate-pulse">
-                  En train de répondre...
-                </span>
+                <span style={{ color: "#85B7EB" }}>En train de répondre...</span>
               )}
             </div>
           </div>
@@ -146,29 +149,56 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-200 px-4 py-4">
-        <div className="max-w-2xl mx-auto flex gap-2">
+      <div style={{
+        background: "#fff",
+        borderTop: "1px solid #DAEAF8",
+        padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
+        flexShrink: 0,
+      }}>
+        <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
             placeholder="Posez votre question..."
             rows={1}
-            className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none text-black focus:ring-2 focus:ring-blue-500 resize-none"
+            style={{
+              flex: 1,
+              background: "#F8FBFF",
+              border: "1px solid #DAEAF8",
+              borderRadius: "14px",
+              padding: "12px 14px",
+              fontSize: "14px",
+              color: "#0C447C",
+              outline: "none",
+              resize: "none",
+              fontFamily: "inherit",
+            }}
           />
           <button
             onClick={() => send()}
             disabled={loading || !input.trim()}
-            className="px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            style={{
+              width: "42px",
+              height: "42px",
+              borderRadius: "50%",
+              border: "none",
+              background: loading || !input.trim() ? "#B5D4F4" : "#185FA5",
+              cursor: loading || !input.trim() ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
           >
-            Envoyer
+            <div style={{ width: 0, height: 0, borderTop: "5px solid transparent", borderBottom: "5px solid transparent", borderLeft: "8px solid #fff", marginLeft: "2px" }} />
           </button>
         </div>
-        <p className="text-center text-xs text-gray-400 mt-2">
+        <p style={{ fontSize: "11px", color: "#B5D4F4", textAlign: "center", margin: "8px 0 0" }}>
           Ne remplace pas l'avis d'un professionnel de santé
         </p>
       </div>
 
-    </main>
+    </div>
   );
 }

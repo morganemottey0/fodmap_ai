@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { DayPlan, MealPlan } from "@/types/fodmap";
-import MealCard from "@/components/MealCard";
 
 export default function MealPlanPage() {
   const [days, setDays] = useState(3);
@@ -15,104 +14,158 @@ export default function MealPlanPage() {
     setLoading(true);
     setError(null);
     setMealPlan(null);
-
     try {
-        const res = await fetch("/api/meal-plan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ days, preferences }),
-          });
-          
-          const data = await res.json();
-          
-          if (!res.ok) {
-            setError(data.error ?? "Erreur lors de la génération.");
-            return;
-          }
-          
-          setMealPlan(data);
-    } catch {
-      setError("Impossible de générer le plan de repas.");
-    } finally {
-      setLoading(false);
-    }
+      const res = await fetch("/api/meal-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ days, preferences }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error ?? "Erreur."); return; }
+      setMealPlan(data);
+    } catch { setError("Impossible de générer le plan."); }
+    finally { setLoading(false); }
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-16">
-      <div className="max-w-2xl mx-auto space-y-8">
+    <div>
+      {/* Header */}
+      <div style={{ background: "#185FA5", padding: "52px 24px 24px" }}>
+        <p style={{ fontSize: "13px", color: "#85B7EB", margin: "0 0 4px" }}>Générer</p>
+        <h1 style={{ fontSize: "24px", fontWeight: 500, color: "#fff", margin: 0, letterSpacing: "-0.03em" }}>
+          Mon plan de repas
+        </h1>
+      </div>
 
-        <div className="text-center space-y-1">
-          <h1 className="text-3xl font-bold text-gray-900">Plan de repas</h1>
-          <p className="text-black text-sm">
-            Génère un menu low-FODMAP personnalisé
+      <div style={{ padding: "24px 20px" }}>
+
+        {/* Nombre de jours */}
+        <div style={{ marginBottom: "20px" }}>
+          <p style={{ fontSize: "12px", color: "#85B7EB", letterSpacing: "0.06em", marginBottom: "10px" }}>
+            NOMBRE DE JOURS
           </p>
+          <div style={{ display: "flex", gap: "8px" }}>
+            {[1, 2, 3, 5, 7].map((d) => (
+              <button
+                key={d}
+                onClick={() => setDays(d)}
+                style={{
+                  flex: 1,
+                  padding: "10px 0",
+                  borderRadius: "12px",
+                  border: `1px solid ${days === d ? "#185FA5" : "#DAEAF8"}`,
+                  background: days === d ? "#E6F1FB" : "#fff",
+                  color: days === d ? "#185FA5" : "#85B7EB",
+                  fontSize: "13px",
+                  fontWeight: days === d ? 500 : 400,
+                  cursor: "pointer",
+                }}
+              >
+                {d}j
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre de jours
-            </label>
-            <select
-              value={days}
-              onChange={(e) => setDays(Number(e.target.value))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {[1, 2, 3, 5, 7].map((d) => (
-                <option key={d} value={d}>
-                  {d} jour{d > 1 ? "s" : ""}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Préférences alimentaires
-            </label>
-            <input
-              type="text"
-              value={preferences}
-              onChange={(e) => setPreferences(e.target.value)}
-              placeholder="Ex : végétarien, sans gluten, riche en protéines..."
-              className="w-full px-4 py-2 rounded-xl border border-gray-300 text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <button
-            onClick={generate}
-            disabled={loading}
-            className="w-full py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading ? "Génération en cours..." : "Générer mon plan"}
-          </button>
+        {/* Préférences */}
+        <div style={{ marginBottom: "20px" }}>
+          <p style={{ fontSize: "12px", color: "#85B7EB", letterSpacing: "0.06em", marginBottom: "10px" }}>
+            PRÉFÉRENCES
+          </p>
+          <input
+            type="text"
+            value={preferences}
+            onChange={(e) => setPreferences(e.target.value)}
+            placeholder="Végétarien, sans gluten..."
+            style={{
+              width: "100%",
+              background: "#fff",
+              border: "1px solid #DAEAF8",
+              borderRadius: "14px",
+              padding: "14px 16px",
+              fontSize: "15px",
+              color: "#0C447C",
+              outline: "none",
+            }}
+          />
         </div>
 
+        {/* Bouton */}
+        <button
+          onClick={generate}
+          disabled={loading}
+          style={{
+            width: "100%",
+            padding: "16px",
+            borderRadius: "16px",
+            border: "none",
+            background: loading ? "#B5D4F4" : "#185FA5",
+            color: "#fff",
+            fontSize: "15px",
+            fontWeight: 500,
+            cursor: loading ? "not-allowed" : "pointer",
+            marginBottom: "24px",
+          }}
+        >
+          {loading ? "Génération en cours..." : "Générer mon plan"}
+        </button>
+
+        {/* Erreur */}
         {error && (
-          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3">
-            {error}
+          <div style={{ background: "#FFEBEE", border: "1px solid #FFCDD2", borderRadius: "14px", padding: "14px 16px", marginBottom: "16px" }}>
+            <p style={{ fontSize: "13px", color: "#C62828", margin: 0 }}>{error}</p>
           </div>
         )}
 
+        {/* Résultat */}
         {mealPlan && (
-          <div className="space-y-6">
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             {mealPlan.days.map((day: DayPlan) => (
-              <div key={day.day} className="space-y-3">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  {day.day}
-                </h2>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <MealCard title="Petit-déjeuner" meal={day.breakfast} />
-                  <MealCard title="Déjeuner" meal={day.lunch} />
-                  <MealCard title="Dîner" meal={day.dinner} />
+              <div key={day.day}>
+                <p style={{ fontSize: "11px", color: "#85B7EB", letterSpacing: "0.1em", marginBottom: "10px" }}>
+                  {day.day.toUpperCase()}
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {[
+                    { label: "Petit-déjeuner", meal: day.breakfast },
+                    { label: "Déjeuner", meal: day.lunch },
+                    { label: "Dîner", meal: day.dinner },
+                  ].map(({ label, meal }) => (
+                    <div key={label} style={{
+                      background: "#fff",
+                      border: "1px solid #DAEAF8",
+                      borderRadius: "16px",
+                      padding: "16px",
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                        <p style={{ fontSize: "11px", color: "#85B7EB", letterSpacing: "0.06em", margin: 0 }}>
+                          {label.toUpperCase()}
+                        </p>
+                        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#4CAF50" }} />
+                      </div>
+                      <p style={{ fontSize: "15px", fontWeight: 500, color: "#0C447C", margin: "0 0 6px" }}>
+                        {meal.name}
+                      </p>
+                      <p style={{ fontSize: "12px", color: "#85B7EB", margin: "0 0 8px", lineHeight: 1.5 }}>
+                        {meal.ingredients.join(" · ")}
+                      </p>
+                      <div style={{
+                        background: "#E6F1FB",
+                        borderRadius: "10px",
+                        padding: "8px 12px",
+                      }}>
+                        <p style={{ fontSize: "12px", color: "#185FA5", margin: 0, lineHeight: 1.5 }}>
+                          {meal.tips}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
         )}
-
       </div>
-    </main>
+    </div>
   );
 }

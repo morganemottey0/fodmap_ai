@@ -1,0 +1,14 @@
+{
+    "name": "FODMAP AI",
+    "short_name": "FODMAP",
+    "description": "Votre guide intelligent low-FODMAP",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#F8FBFF",
+    "theme_color": "#185FA5",
+    "orientation": "portrait",
+    "icons": [
+      { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+      { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    ]
+  }

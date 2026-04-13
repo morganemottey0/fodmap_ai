@@ -1,65 +1,93 @@
-import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      {/* Header */}
+      <div style={{
+        background: "#185FA5",
+        padding: "52px 24px 28px",
+      }}>
+        <p style={{ fontSize: "13px", color: "#85B7EB", margin: "0 0 6px", letterSpacing: "0.04em" }}>
+          Bonjour
+        </p>
+        <h1 style={{ fontSize: "26px", fontWeight: 500, color: "#fff", margin: "0 0 20px", letterSpacing: "-0.03em", lineHeight: 1.2 }}>
+          Que mangez-vous<br />aujourd'hui ?
+        </h1>
+        <Link href="/scanner" style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          background: "#0C447C",
+          borderRadius: "14px",
+          padding: "13px 16px",
+          textDecoration: "none",
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="#85B7EB" strokeWidth="1.8"/>
+            <path d="M16.5 16.5L21 21" stroke="#85B7EB" strokeWidth="1.8" strokeLinecap="round"/>
+          </svg>
+          <span style={{ fontSize: "14px", color: "#B5D4F4" }}>Rechercher un aliment...</span>
+        </Link>
+      </div>
+
+      {/* Actions rapides */}
+      <div style={{ padding: "24px 20px 0" }}>
+        <p style={{ fontSize: "11px", color: "#85B7EB", letterSpacing: "0.1em", marginBottom: "12px" }}>
+          ACCÈS RAPIDE
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "28px" }}>
+          {[
+            { href: "/scanner", label: "Analyser", sub: "un aliment", color: "#E6F1FB", border: "#B5D4F4", dot: "#185FA5" },
+            { href: "/meal-plan", label: "Mes repas", sub: "cette semaine", color: "#E6F1FB", border: "#B5D4F4", dot: "#378ADD" },
+            { href: "/chat", label: "Diététicien", sub: "poser une question", color: "#E6F1FB", border: "#B5D4F4", dot: "#85B7EB" },
+          ].map((item) => (
+            <Link key={item.href} href={item.href} style={{
+              background: item.color,
+              border: `1px solid ${item.border}`,
+              borderRadius: "18px",
+              padding: "18px 16px",
+              textDecoration: "none",
+            }}>
+              <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: item.dot, marginBottom: "12px" }} />
+              <p style={{ fontSize: "14px", fontWeight: 500, color: "#0C447C", margin: "0 0 2px" }}>{item.label}</p>
+              <p style={{ fontSize: "11px", color: "#85B7EB", margin: 0 }}>{item.sub}</p>
+            </Link>
+          ))}
+          <div style={{
+            background: "#185FA5",
+            borderRadius: "18px",
+            padding: "18px 16px",
+          }}>
+            <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", marginBottom: "12px" }} />
+            <p style={{ fontSize: "14px", fontWeight: 500, color: "#fff", margin: "0 0 2px" }}>Guide</p>
+            <p style={{ fontSize: "11px", color: "#85B7EB", margin: 0 }}>comprendre FODMAP</p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Niveaux */}
+        <p style={{ fontSize: "11px", color: "#85B7EB", letterSpacing: "0.1em", marginBottom: "12px" }}>
+          LES NIVEAUX
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", marginBottom: "28px" }}>
+          {[
+            { label: "Low", bg: "#E8F5E9", border: "#C8E6C9", dot: "#4CAF50", text: "#1B5E20" },
+            { label: "Modéré", bg: "#FFF8E1", border: "#FFE0B2", dot: "#FF9800", text: "#E65100" },
+            { label: "High", bg: "#FFEBEE", border: "#FFCDD2", dot: "#F44336", text: "#B71C1C" },
+          ].map((l) => (
+            <div key={l.label} style={{
+              background: l.bg,
+              border: `1px solid ${l.border}`,
+              borderRadius: "14px",
+              padding: "14px 10px",
+              textAlign: "center",
+            }}>
+              <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: l.dot, margin: "0 auto 8px" }} />
+              <p style={{ fontSize: "11px", fontWeight: 500, color: l.text, margin: 0 }}>{l.label}</p>
+            </div>
+          ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 }
