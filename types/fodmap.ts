@@ -46,3 +46,9 @@ export interface Meal {
     preferences: string;
     restrictions: string[];
   }
+
+  // Ajouter à la suite du fichier existant
+export interface ChatMessage {
+    role: "user" | "assistant";
+    content: string;
+  }
