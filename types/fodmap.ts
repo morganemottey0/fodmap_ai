@@ -23,3 +23,26 @@ export interface FoodEntry {
   safe_portion: number;
   tips: string;
 }
+
+export interface Meal {
+    name: string;
+    ingredients: string[];
+    tips: string;
+  }
+  
+  export interface DayPlan {
+    day: string;
+    breakfast: Meal;
+    lunch: Meal;
+    dinner: Meal;
+  }
+  
+  export interface MealPlan {
+    days: DayPlan[];
+  }
+  
+  export interface MealPlanConfig {
+    days: number;
+    preferences: string;
+    restrictions: string[];
+  }
